@@ -1,0 +1,334 @@
+{
+  "name": "Telegram Inventory Management",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cc49c9ed-49cc-489a-bee5-056ad699bf62",
+      "name": "Telegram Trigger",
+      "webhookId": "ab458a52-8644-4bd4-8ba0-e699f11d70cd",
+      "credentials": {
+        "telegramApi": {
+          "id": "oK3B82siK0tZUNlC",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are an intelligent Inventory Management Assistant for a clothing warehouse \"Code View Solution\".\n\n**Product Catalog:**\nBlack Round Neck T-shirt\nRed Round Neck T-shirt\nWhite Round Neck T-shirt\nN Blue Round Neck T-shirt\nRed basketball Cap\nBlack basketball Cap\nJeans Cap\nBlack Oversized T-shirt\nRed Oversized T-shirt\nWhite Oversized T-shirt\n\n**Sheet Structure:**\nColumns: SKU, ProductName, ProductPrice, Quantity, Availability, Reorder Level, Remark\n\n**Your Capabilities:**\n1. Check stock levels for any product (T-shirt, Caps, Oversized T-shirts)\n2. Update inventory quantities (Quantity column)\n3. Check product prices and availability\n4. Alert when stock is below Reorder Level\n5. Provide inventory insights and recommendations\n\n**Available Tools:**\n- Google Sheets Tool (Read): Search and retrieve product information by ProductName\n- Google Sheets Tool (Update): Modify inventory quantities and other fields\n- Telegram Tool: Send responses to the user. So the user will interact with you on Telegram, so for any user message from the Telegram, relevant response should be sent back on telegram to the user.\n\n**Instructions:**\n1. Always greet users warmly with clothing/fashion context\n2. When checking stock, use the Read tool to get current data from the sheet\n3. When updating stock, first verify the product exists, then use Update tool\n4. After updates, confirm the new quantity and show updated details\n5. If Quantity falls below Reorder Level, warn the user with ⚠️\n6. When showing product info, include: ProductName, Quantity, ProductPrice, Availability\n7. Use the Telegram Tool to send ALL responses to the user\n8. Be conversational and helpful\n9. Use emojis: 👕 for T-shirts, 🧢 for Caps, 📦 for inventory, ✅ for success, ⚠️ for warnings\n10. If user asks about products not in catalog (T-shirt, Caps, Oversized T-shirts), politely inform them\n\n**Response Format Example:**\n👕 **T-shirt Stock Status**\n- Quantity: 50 units\n- Price: ₹499\n- Availability: In Stock\n- Reorder Level: 10 units\n\nREMEMBER: Always respond via the Telegram Tool to the user, so that the user can be informed of the changes.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e75eb28b-fa21-4cd7-b481-201564503cce",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        240
+      ],
+      "id": "cae81886-6b8f-43be-85b4-55f744729159",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ekP1xfYYV5jvMeTO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "Test",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        288,
+        240
+      ],
+      "id": "0e60cb3d-fb36-4020-9675-4eaa5937b83a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1zxod8RFgLnmFI_uQmV6lI4abQqBebRLIXeZeGeTlQZA",
+          "mode": "list",
+          "cachedResultName": "Gyanipandit Inventory Management Agent ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zxod8RFgLnmFI_uQmV6lI4abQqBebRLIXeZeGeTlQZA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zxod8RFgLnmFI_uQmV6lI4abQqBebRLIXeZeGeTlQZA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        432,
+        224
+      ],
+      "id": "04994ce9-2fc5-4989-aff7-e81d8de95524",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9ufmazLLw0gocG5W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1zxod8RFgLnmFI_uQmV6lI4abQqBebRLIXeZeGeTlQZA",
+          "mode": "list",
+          "cachedResultName": "Gyanipandit Inventory Management Agent ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zxod8RFgLnmFI_uQmV6lI4abQqBebRLIXeZeGeTlQZA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zxod8RFgLnmFI_uQmV6lI4abQqBebRLIXeZeGeTlQZA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Quantity": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Quantity', ``, 'string') }}",
+            "Availability": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Availability', ``, 'string') }}",
+            "Remark": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Remark', ``, 'string') }}",
+            "SKU": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('SKU__using_to_match_', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "SKU"
+          ],
+          "schema": [
+            {
+              "id": "SKU",
+              "displayName": "SKU",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProductName",
+              "displayName": "ProductName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ProductPrice",
+              "displayName": "ProductPrice",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Availability",
+              "displayName": "Availability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reorder Level",
+              "displayName": "Reorder Level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Remark",
+              "displayName": "Remark",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        224
+      ],
+      "id": "273e2232-a4f3-4534-8228-2f9237210d87",
+      "name": "Append or update row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9ufmazLLw0gocG5W",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8677233226",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        208
+      ],
+      "id": "9a5ffb00-177a-448a-8cf9-0215924ab371",
+      "name": "Send a text message in Telegram",
+      "webhookId": "30c4536f-9ae2-4ad3-87a0-283048cc08fc",
+      "credentials": {
+        "telegramApi": {
+          "id": "oK3B82siK0tZUNlC",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message in Telegram": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "08842bc6-57cb-41e4-97b3-e614816f7d62",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0db95a4ee694e6812f355ce755cb30362367a2aeab1026f94aca0748d3beb0da"
+  },
+  "nodeGroups": [],
+  "id": "rLOS0OLcEyOqXHMA",
+  "tags": []
+}
