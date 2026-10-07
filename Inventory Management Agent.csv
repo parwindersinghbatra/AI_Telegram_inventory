@@ -1,0 +1,11 @@
+SKU,ProductName,ProductPrice,Quantity,Availability,Reorder Level,Remark
+BRNT,Black Round Neck T-shirt,499,37,YES,25,
+RRNT,Red Round Neck T-shirt,499,150,YES,25,
+WRNT,White Round Neck T-shirt,499,62,YES,25,
+NBRNT,N Blue Round Neck T-shirt,499,50,YES,25,
+RBC,Red basketball Cap,299,0,Out Of Stock,25,
+BBC,Black basketball Cap,299,100,YES,25,
+JC,Jeans Cap,299,146,YES,25,
+BOT,Black Oversized T-shirt,699,50,YES,25,
+ROT,Red Oversized T-shirt,699,150,YES,25,
+WOT,White Oversized T-shirt,699,125,YES,25,
